@@ -2,100 +2,95 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-<meta charset="UTF-8">
-<title>Adventskalender mit Hintergrund als Bild</title>
-<style>
+  <meta charset="UTF-8">
+  <title>Adventskalender mit Hintergrund als Bild</title>
+  <style>
     body {
-        margin: 0;
-        font-family: Arial, sans-serif;
-        overflow: hidden;
-        background: url('bilder/background.jpg') no-repeat center center;
+      margin: 0;
+      font-family: Arial, sans-serif;
+      overflow: hidden;
+      background: url('bilder/background.jpg') no-repeat center center;
       background-size: cover;
-
-    }
     }
     .calendar {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        display: grid;
-        grid-template-columns: repeat(6, 100px);
-        grid-template-rows: repeat(4, 100px);
-        gap: 10px;
-        justify-content: center;
-        align-items: center;
-        perspective: 1000px;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: grid;
+      grid-template-columns: repeat(6, 100px);
+      grid-template-rows: repeat(4, 100px);
+      gap: 10px;
+      justify-content: center;
+      align-items: center;
+      perspective: 1000px;
     }
     .door {
-        position: relative;
-        width: 100px;
-        height: 100px;
-        cursor: pointer;
-        transform-style: preserve-3d;
-        transition: transform 0.8s;
+      position: relative;
+      width: 100px;
+      height: 100px;
+      cursor: pointer;
+      transform-style: preserve-3d;
+      transition: transform 0.8s;
     }
     .door .front, .door .back {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        backface-visibility: hidden;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-size: 1.5em;
-        font-weight: bold;
-        border: 2px solid #333;
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 1.5em;
+      font-weight: bold;
+      border: 2px solid #333;
     }
     .door .front {
-        background-color: yellow; /* Gelbe Türchen */
-        color: black;
+      background-color: yellow;
+      color: black;
     }
     .door .back {
-        background-color: yellow;
-        color: gold;
-        transform: rotateY(180deg);
-        font-size: 2em;
+      background-color: yellow;
+      color: gold;
+      transform: rotateY(180deg);
+      font-size: 2em;
     }
     .door.opened {
-        transform: rotateY(180deg);
+      transform: rotateY(180deg);
     }
     .overlay {
-        position: fixed;
-        top: 0; left: 0;
-        width: 100%; height: 100%;
-        background: rgba(0,0,0,0.8);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 999;
-        visibility: hidden;
-        opacity: 0;
-        transition: opacity 0.5s;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.8);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+      visibility: hidden;
+      opacity: 0;
+      transition: opacity 0.5s;
     }
     .overlay img {
-        max-width: 80%;
-        max-height: 80%;
-        border: 5px solid white;
-        box-shadow: 0 0 20px #fff;
+      max-width: 80%;
+      max-height: 80%;
+      border: 5px solid white;
+      box-shadow: 0 0 20px #fff;
     }
     .overlay.show {
-        visibility: visible;
-        opacity: 1;
+      visibility: visible;
+      opacity: 1;
     }
-</style>
+  </style>
 </head>
 <body>
-bilder/background.jpg
-<div class="calendar" id="calendar"></div>
-<div class="overlay" id="overlay">
+  <div class="calendar" id="calendar"></div>
+  <div class="overlay" id="overlay">
     <img id="overlay-img" src="" alt="Advent Bild">
-</div>
-
-sounds/bell.mp3</audio>
-
-<script>
+  </div>
+  sounds/bell.mp3</audio>
+  <script>
     const calendar = document.getElementById('calendar');
     const overlay = document.getElementById('overlay');
     const overlayImg = document.getElementById('overlay-img');
@@ -103,52 +98,55 @@ sounds/bell.mp3</audio>
 
     const images = [];
     for (let i = 1; i <= 24; i++) {
-        images.push('bilder/' + i + '.jpg');
+      images.push('bilder/' + i + '.jpg');
     }
 
     const today = new Date();
     const currentDay = today.getMonth() === 11 ? today.getDate() : 0;
 
     for (let i = 1; i <= 24; i++) {
-        const door = document.createElement('div');
-        door.classList.add('door');
+      const door = document.createElement('div');
+      door.classList.add('door');
 
-        const front = document.createElement('div');
-        front.classList.add('front');
-        front.textContent = i;
+      const front = document.createElement('div');
+      front.classList.add('front');
+      front.textContent = i;
 
-        const back = document.createElement('div');
-        back.classList.add('back');
-        back.textContent = '★';
+      const back = document.createElement('div');
+      back.classList.add('back');
+      back.textContent = '★';
 
-        door.appendChild(front);
-        door.appendChild(back);
+      door.appendChild(front);
+      door.appendChild(back);
 
-        door.addEventListener('click', () => {
-            if (i <= currentDay) { // NEUE REGEL: alle Türchen bis heute öffnen
-                door.classList.add('opened');
-                doorSound.currentTime = 0;
-                doorSound.play();
-                showImage(images[i - 1]);
-            } else {
-                alert('Dieses Türchen darfst du erst am ' + i + '. Dezember öffnen!');
-            }
-        });
+      door.addEventListener('click', () => {
+        if (i <= currentDay) { // Alle Türchen bis heute öffnen
+          door.classList.add('opened');
+          if (doorSound) {
+            doorSound.currentTime = 0;
+            doorSound.play().catch(() => {});
+          }
+          showImage(images[i - 1]);
+        } else {
+          alert('Dieses Türchen darfst du erst am ' + i + '. Dezember öffnen!');
+        }
+      });
 
-        calendar.appendChild(door);
+      calendar.appendChild(door);
     }
 
     function showImage(src) {
-        overlayImg.src = src;
-        overlay.classList.add('show');
-        setTimeout(() => {
-            overlay.classList.remove('show');
-            overlayImg.src = '';
-        }, 10000);
+      overlayImg.src = src;
+      overlay.classList.add('show');
+      setTimeout(() => {
+        overlay.classList.remove('show');
+        overlayImg.src = '';
+      }, 10000);
     }
-</script>
+  </script>
 </body>
 </html>
+
 
 
 
