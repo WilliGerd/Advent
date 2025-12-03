@@ -3,31 +3,24 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8">
-  <title>Adventskalender mit Hintergrund als Bild</title>
+  <title>Adventskalender mit Sound</title>
   <style>
     body {
-      margin: 0;
       font-family: Arial, sans-serif;
-      overflow: hidden;
       background: url('bilder/background.jpg') no-repeat center center;
       background-size: cover;
+      height: 100vh;
+      margin: 0;
+      overflow: hidden;
+      position: relative;
     }
     .calendar {
-      position: absolute;
-      top: 0;
-      left: 0;
+      position: relative;
       width: 100%;
       height: 100%;
-      display: grid;
-      grid-template-columns: repeat(6, 100px);
-      grid-template-rows: repeat(4, 100px);
-      gap: 10px;
-      justify-content: center;
-      align-items: center;
-      perspective: 1000px;
     }
     .door {
-      position: relative;
+      position: absolute;
       width: 100px;
       height: 100px;
       cursor: pointer;
@@ -47,11 +40,10 @@
       border: 2px solid #333;
     }
     .door .front {
-      background-color: yellow;
-      color: black;
+      background-color: rgba(255,255,255,0.8);
     }
     .door .back {
-      background-color: yellow;
+      background-color: transparent;
       color: gold;
       transform: rotateY(180deg);
       font-size: 2em;
@@ -73,14 +65,29 @@
       transition: opacity 0.5s;
     }
     .overlay img {
-      max-width: 80%;
-      max-height: 80%;
+    max-width: 95%;
+    max-height: 95%;
       border: 5px solid white;
       box-shadow: 0 0 20px #fff;
     }
     .overlay.show {
       visibility: visible;
       opacity: 1;
+    }
+    /* Schneefall */
+    .snowflake {
+      position: fixed;
+      top: -10px;
+      color: white;
+      font-size: 2em;
+      animation: fall linear infinite;
+      pointer-events: none;
+      user-select: none;
+    }
+    @keyframes fall {
+      to {
+        transform: translateY(100vh);
+      }
     }
   </style>
 </head>
@@ -89,24 +96,51 @@
   <div class="overlay" id="overlay">
     <img id="overlay-img" src="" alt="Advent Bild">
   </div>
-  sounds/bell.mp3</audio>
+  <!-- Audio für Soundeffekt -->
+  <audio id="door-sound" src="sounds/bell.mp3" preload="auto"></audio>
   <script>
     const calendar = document.getElementById('calendar');
     const overlay = document.getElementById('overlay');
     const overlayImg = document.getElementById('overlay-img');
     const doorSound = document.getElementById('door-sound');
 
+    // Bildpfade: bilder/1.jpg ... bilder/24.jpg
     const images = [];
     for (let i = 1; i <= 24; i++) {
       images.push('bilder/' + i + '.jpg');
     }
 
+    // Nur im Dezember die Tür des aktuellen Tages öffnen
     const today = new Date();
-    const currentDay = today.getMonth() === 11 ? today.getDate() : 0;
+    const currentDay = (today.getMonth() === 11) ? today.getDate() : 0; // 11 = Dezember
+
+    const doors = [];
+    const doorSize = 110; // inkl. Abstand
+    const maxAttempts = 1000;
+
+    function isColliding(x, y) {
+      for (let d of doors) {
+        if (Math.abs(d.x - x) < doorSize && Math.abs(d.y - y) < doorSize) {
+          return true;
+        }
+      }
+      return false;
+    }
 
     for (let i = 1; i <= 24; i++) {
+      let x, y, attempts = 0;
+      do {
+        x = Math.random() * (window.innerWidth - 120);
+        y = Math.random() * (window.innerHeight - 120);
+        attempts++;
+      } while (isColliding(x, y) && attempts < maxAttempts);
+
+      doors.push({x, y});
+
       const door = document.createElement('div');
       door.classList.add('door');
+      door.style.left = x + 'px';
+      door.style.top = y + 'px';
 
       const front = document.createElement('div');
       front.classList.add('front');
@@ -120,11 +154,11 @@
       door.appendChild(back);
 
       door.addEventListener('click', () => {
-        if (i <= currentDay) { // Alle Türchen bis heute öffnen
+        if (i <= currentDay) {
           door.classList.add('opened');
           if (doorSound) {
             doorSound.currentTime = 0;
-            doorSound.play().catch(() => {});
+            doorSound.play().catch(() => {/* Autoplay blockiert – ignorieren */});
           }
           showImage(images[i - 1]);
         } else {
@@ -143,10 +177,19 @@
         overlayImg.src = '';
       }, 10000);
     }
+
+    // Schneefall
+    function createSnowflake() {
+      const snowflake = document.createElement('div');
+      snowflake.classList.add('snowflake');
+      snowflake.textContent = '❄';
+      snowflake.style.left = Math.random() * window.innerWidth + 'px';
+      snowflake.style.fontSize = (Math.random() * 10 + 10) + 'px';
+      snowflake.style.animationDuration = (Math.random() * 3 + 2) + 's';
+      document.body.appendChild(snowflake);
+      setTimeout(() => snowflake.remove(), 5000);
+    }
+    setInterval(createSnowflake, 200);
   </script>
 </body>
 </html>
-
-
-
-
