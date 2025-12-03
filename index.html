@@ -85,85 +85,71 @@
         visibility: visible;
         opacity: 1;
     }
-
-    /* Schneefall */
-    .snowflake {
-      position: fixed;
-      top: -10px;
-      color: white;
-      font-size: 2em;
-      animation: fall linear infinite;
-      pointer-events: none;
-      user-select: none;
-    }
-    @keyframes fall {
-      to {
-        transform: translateY(100vh);
-      }
-    }
-  </style>
+</style>
 </head>
-
 <body>
-  bilder/background.jpg
-  <div class="calendar" id="calendar"></div>
-  <div class="overlay" id="overlay">
-      <img id="overlay-img" src="" alt="Advent Bild">
-  </div>
-  
-  sounds/bell.mp3</audio>
-  
-  <script>
-      const calendar = document.getElementById('calendar');
-      const overlay = document.getElementById('overlay');
-      const overlayImg = document.getElementById('overlay-img');
-      const doorSound = document.getElementById('door-sound');
-  
-      const images = [];
-      for (let i = 1; i <= 24; i++) {
-          images.push('bilder/' + i + '.jpg');
-      }
-  
-      const today = new Date();
-      const currentDay = today.getMonth() === 11 ? today.getDate() : 0;
-  
-      for (let i = 1; i <= 24; i++) {
-          const door = document.createElement('div');
-          door.classList.add('door');
-  
-          const front = document.createElement('div');
-          front.classList.add('front');
-          front.textContent = i;
-  
-          const back = document.createElement('div');
-          back.classList.add('back');
-          back.textContent = '★';
-  
-          door.appendChild(front);
-          door.appendChild(back);
-  
-          door.addEventListener('click', () => {
-              if (i <= currentDay) { // NEUE REGEL: alle Türchen bis heute öffnen
-                  door.classList.add('opened');
-                  doorSound.currentTime = 0;
-                  doorSound.play();
-                  showImage(images[i - 1]);
-              } else {
-                  alert('Dieses Türchen darfst du erst am ' + i + '. Dezember öffnen!');
-              }
-          });
-  
-          calendar.appendChild(door);
-      }
-  
-      function showImage(src) {
-          overlayImg.src = src;
-          overlay.classList.add('show');
-          setTimeout(() => {
-              overlay.classList.remove('show');
-              overlayImg.src = '';
-          }, 10000);
-      }
-  </script>
-  </body>
-  </html>
+bilder/background.jpg
+<div class="calendar" id="calendar"></div>
+<div class="overlay" id="overlay">
+    <img id="overlay-img" src="" alt="Advent Bild">
+</div>
+
+sounds/bell.mp3</audio>
+
+<script>
+    const calendar = document.getElementById('calendar');
+    const overlay = document.getElementById('overlay');
+    const overlayImg = document.getElementById('overlay-img');
+    const doorSound = document.getElementById('door-sound');
+
+    const images = [];
+    for (let i = 1; i <= 24; i++) {
+        images.push('bilder/' + i + '.jpg');
+    }
+
+    const today = new Date();
+    const currentDay = today.getMonth() === 11 ? today.getDate() : 0;
+
+    for (let i = 1; i <= 24; i++) {
+        const door = document.createElement('div');
+        door.classList.add('door');
+
+        const front = document.createElement('div');
+        front.classList.add('front');
+        front.textContent = i;
+
+        const back = document.createElement('div');
+        back.classList.add('back');
+        back.textContent = '★';
+
+        door.appendChild(front);
+        door.appendChild(back);
+
+        door.addEventListener('click', () => {
+            if (i <= currentDay) { // NEUE REGEL: alle Türchen bis heute öffnen
+                door.classList.add('opened');
+                doorSound.currentTime = 0;
+                doorSound.play();
+                showImage(images[i - 1]);
+            } else {
+                alert('Dieses Türchen darfst du erst am ' + i + '. Dezember öffnen!');
+            }
+        });
+
+        calendar.appendChild(door);
+    }
+
+    function showImage(src) {
+        overlayImg.src = src;
+        overlay.classList.add('show');
+        setTimeout(() => {
+            overlay.classList.remove('show');
+            overlayImg.src = '';
+        }, 10000);
+    }
+</script>
+</body>
+</html>
+
+
+
